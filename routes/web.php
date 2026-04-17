@@ -22,6 +22,7 @@ use App\Http\Controllers\Warehouse\Inventory\WasteController as WarehouseWasteCo
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Warehouse\OrderController as WarehouseOrderController;
+use App\Http\Controllers\Warehouse\ShipmentController as WarehouseShipmentController;
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -99,6 +100,10 @@ Route::middleware('auth')->group(function () {
         Route::get('orders', [WarehouseOrderController::class, 'index'])->name('orders.index');
         Route::get('orders/create', [WarehouseOrderController::class, 'create'])->name('orders.create');
         Route::post('orders', [WarehouseOrderController::class, 'store'])->name('orders.store');
+
+        Route::get('shipments', [WarehouseShipmentController::class, 'index'])->name('shipments.index');
+        Route::get('shipments/create', [WarehouseShipmentController::class, 'create'])->name('shipments.create');
+        Route::post('shipments', [WarehouseShipmentController::class, 'store'])->name('shipments.store');
     });
 
     Route::prefix('driver')->name('driver.')->middleware('role:driver')->group(function () {
