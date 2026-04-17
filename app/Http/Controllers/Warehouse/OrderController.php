@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use App\Services\GoogleMapsService;
 
 class OrderController extends Controller
 {
@@ -33,7 +34,7 @@ class OrderController extends Controller
         return view('warehouse.orders.create', compact('products'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, GoogleMapsService $googleMapsService): RedirectResponse
     {
         $warehouseId = auth()->user()->warehouse_id;
 
@@ -56,7 +57,8 @@ class OrderController extends Controller
             'items.*.qty.required' => 'Qty wajib diisi.',
         ]);
 
-        DB::transaction(function () use ($validated, $warehouseId) {
+        DB::transaction(function () use ($validated, $warehouseId, $googleMapsService) {
+            $geocode = $googleMapsService->geocode($validated['delivery_address']);
             $order = Order::create([
                 'order_number' => 'ORD-' . now()->format('YmdHis'),
                 'order_date' => $validated['order_date'],
@@ -67,6 +69,8 @@ class OrderController extends Controller
                 'status' => 'draft',
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => auth()->id(),
+                'delivery_latitude' => $geocode['latitude'] ?? null,
+                'delivery_longitude' => $geocode['longitude'] ?? null,
             ]);
 
             foreach ($validated['items'] as $item) {

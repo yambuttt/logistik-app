@@ -18,6 +18,8 @@ class Order extends Model
         'status',
         'notes',
         'created_by',
+        'delivery_latitude',
+'delivery_longitude',
     ];
 
     public function warehouse(): BelongsTo

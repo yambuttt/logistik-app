@@ -18,6 +18,9 @@ class Shipment extends Model
         'status',
         'notes',
         'created_by',
+        'estimated_distance_km',
+        'estimated_duration_minutes',
+        'google_maps_url',
     ];
 
     public function warehouse(): BelongsTo

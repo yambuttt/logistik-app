@@ -43,6 +43,8 @@
                             <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                                 Kendaraan</th>
                             <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                                Maps</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                                 Status</th>
                         </tr>
                     </thead>
@@ -68,6 +70,24 @@
                                         <div>{{ $shipment->vehicle->plate_number }}</div>
                                     @else
                                         -
+                                    @endif
+                                </td>
+                                <td class="px-4 py-4 text-sm text-slate-700">
+                                    @if ($shipment->estimated_distance_km || $shipment->estimated_duration_minutes)
+                                        <div>{{ $shipment->estimated_distance_km ? $shipment->estimated_distance_km . ' km' : '-' }}
+                                        </div>
+                                        <div>
+                                            {{ $shipment->estimated_duration_minutes ? $shipment->estimated_duration_minutes . ' menit' : '-' }}
+                                        </div>
+                                    @else
+                                        -
+                                    @endif
+
+                                    @if ($shipment->google_maps_url)
+                                        <a href="{{ $shipment->google_maps_url }}" target="_blank"
+                                            class="mt-2 inline-block text-xs font-semibold text-emerald-700 hover:underline">
+                                            Buka Maps
+                                        </a>
                                     @endif
                                 </td>
                                 <td class="rounded-r-2xl px-4 py-4 text-sm">

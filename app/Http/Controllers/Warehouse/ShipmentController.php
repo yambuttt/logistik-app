@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use App\Services\ShipmentCapacityService;
+use App\Services\GoogleMapsService;
 use App\Services\AutoAssignShipmentService;
 
 class ShipmentController extends Controller
@@ -41,8 +42,11 @@ class ShipmentController extends Controller
         return view('warehouse.shipments.create', compact('orders'));
     }
 
-    public function store(Request $request, AutoAssignShipmentService $autoAssignShipmentService): RedirectResponse
-    {
+    public function store(
+        Request $request,
+        AutoAssignShipmentService $autoAssignShipmentService,
+        GoogleMapsService $googleMapsService
+    ): RedirectResponse {
         $warehouseId = auth()->user()->warehouse_id;
 
         $validated = $request->validate([
@@ -62,8 +66,36 @@ class ShipmentController extends Controller
             $order,
             $validated['shipment_date']
         );
+        $distanceData = null;
+        $googleMapsUrl = null;
 
-        DB::transaction(function () use ($validated, $warehouseId, $order, $assignmentResult) {
+        if (
+            $assignmentResult['matched']
+            && $order->delivery_latitude
+            && $order->delivery_longitude
+        ) {
+            $warehouse = auth()->user()->warehouse;
+
+            if ($warehouse && $warehouse->address) {
+                $warehouseGeocode = $googleMapsService->geocode($warehouse->address);
+
+                if ($warehouseGeocode) {
+                    $distanceData = $googleMapsService->distanceMatrix(
+                        (float) $warehouseGeocode['latitude'],
+                        (float) $warehouseGeocode['longitude'],
+                        (float) $order->delivery_latitude,
+                        (float) $order->delivery_longitude
+                    );
+                }
+            }
+
+            $googleMapsUrl = $googleMapsService->buildGoogleMapsUrl(
+                (float) $order->delivery_latitude,
+                (float) $order->delivery_longitude
+            );
+        }
+
+        DB::transaction(function () use ($validated, $warehouseId, $order, $assignmentResult, $distanceData, $googleMapsUrl) {
             $shipment = Shipment::create([
                 'shipment_number' => 'SHP-' . now()->format('YmdHis'),
                 'shipment_date' => $validated['shipment_date'],
@@ -74,6 +106,9 @@ class ShipmentController extends Controller
                 'status' => $assignmentResult['matched'] ? 'assigned' : 'waiting_driver',
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => auth()->id(),
+                'estimated_distance_km' => $distanceData['distance_km'] ?? null,
+                'estimated_duration_minutes' => $distanceData['duration_minutes'] ?? null,
+                'google_maps_url' => $googleMapsUrl,
             ]);
 
             foreach ($order->items as $item) {
