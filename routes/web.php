@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Inventory\ProductController;
 use App\Http\Controllers\Admin\Inventory\GoodsReceiptController;
 use App\Http\Controllers\Admin\Inventory\StockController;
 use App\Http\Controllers\Admin\Inventory\InventoryMovementController;
+use App\Http\Controllers\Admin\Inventory\WasteController;
 Route::get('/', function () {
     if (!Auth::check()) {
         return redirect()->route('login');
@@ -39,6 +40,9 @@ Route::middleware('auth')->group(function () {
         Route::get('goods-receipts/create', [GoodsReceiptController::class, 'create'])->name('goods-receipts.create');
         Route::post('goods-receipts', [GoodsReceiptController::class, 'store'])->name('goods-receipts.store');
         Route::get('inventory-movements', [InventoryMovementController::class, 'index'])->name('inventory-movements.index');
+        Route::get('wastes', [WasteController::class, 'index'])->name('wastes.index');
+        Route::get('wastes/create', [WasteController::class, 'create'])->name('wastes.create');
+        Route::post('wastes', [WasteController::class, 'store'])->name('wastes.store');
     });
     Route::get('/warehouse/dashboard', [WarehouseDashboardController::class, 'index'])->name('warehouse.dashboard');
     Route::get('/driver/dashboard', [DriverDashboardController::class, 'index'])->name('driver.dashboard');
