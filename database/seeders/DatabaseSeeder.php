@@ -34,5 +34,12 @@ class DatabaseSeeder extends Seeder
                 'role' => 'driver',
             ]
         );
+
+        $this->call([
+            WarehouseSeeder::class,
+            UnitSeeder::class,
+            ProductSeeder::class,
+            StockSeeder::class,
+        ]);
     }
 }
