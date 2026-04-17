@@ -128,6 +128,12 @@
                             <span>Waste</span>
                         </a>
 
+                        <a href="{{ route('admin.stock-opnames.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.stock-opnames.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span class="text-lg">📋</span>
+                            <span>Stock Opname</span>
+                        </a>
+
 
                     </nav>
                 </div>
@@ -259,6 +265,12 @@
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.wastes.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span class="text-lg">🗑️</span>
                         <span>Waste</span>
+                    </a>
+
+                    <a href="{{ route('admin.stock-opnames.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.stock-opnames.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span class="text-lg">📋</span>
+                        <span>Stock Opname</span>
                     </a>
 
 

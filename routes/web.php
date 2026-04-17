@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Inventory\GoodsReceiptController;
 use App\Http\Controllers\Admin\Inventory\StockController;
 use App\Http\Controllers\Admin\Inventory\InventoryMovementController;
 use App\Http\Controllers\Admin\Inventory\WasteController;
+use App\Http\Controllers\Admin\Inventory\StockOpnameController;
 Route::get('/', function () {
     if (!Auth::check()) {
         return redirect()->route('login');
@@ -43,6 +44,9 @@ Route::middleware('auth')->group(function () {
         Route::get('wastes', [WasteController::class, 'index'])->name('wastes.index');
         Route::get('wastes/create', [WasteController::class, 'create'])->name('wastes.create');
         Route::post('wastes', [WasteController::class, 'store'])->name('wastes.store');
+        Route::get('stock-opnames', [StockOpnameController::class, 'index'])->name('stock-opnames.index');
+        Route::get('stock-opnames/create', [StockOpnameController::class, 'create'])->name('stock-opnames.create');
+        Route::post('stock-opnames', [StockOpnameController::class, 'store'])->name('stock-opnames.store');
     });
     Route::get('/warehouse/dashboard', [WarehouseDashboardController::class, 'index'])->name('warehouse.dashboard');
     Route::get('/driver/dashboard', [DriverDashboardController::class, 'index'])->name('driver.dashboard');
