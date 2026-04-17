@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\Inventory\StockController;
 use App\Http\Controllers\Admin\Inventory\InventoryMovementController;
 use App\Http\Controllers\Admin\Inventory\WasteController;
 use App\Http\Controllers\Admin\Inventory\StockOpnameController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VehicleController;
 Route::get('/', function () {
     if (!Auth::check()) {
         return redirect()->route('login');
@@ -47,6 +49,12 @@ Route::middleware('auth')->group(function () {
         Route::get('stock-opnames', [StockOpnameController::class, 'index'])->name('stock-opnames.index');
         Route::get('stock-opnames/create', [StockOpnameController::class, 'create'])->name('stock-opnames.create');
         Route::post('stock-opnames', [StockOpnameController::class, 'store'])->name('stock-opnames.store');
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('users', [UserController::class, 'store'])->name('users.store');
+        Route::get('vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+        Route::get('vehicles/create', [VehicleController::class, 'create'])->name('vehicles.create');
+        Route::post('vehicles', [VehicleController::class, 'store'])->name('vehicles.store');
     });
     Route::get('/warehouse/dashboard', [WarehouseDashboardController::class, 'index'])->name('warehouse.dashboard');
     Route::get('/driver/dashboard', [DriverDashboardController::class, 'index'])->name('driver.dashboard');
