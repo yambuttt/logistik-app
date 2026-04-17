@@ -18,6 +18,9 @@ use App\Http\Controllers\Admin\VehicleCapacityController;
 use App\Http\Controllers\Driver\VehicleAssignmentController;
 use App\Http\Controllers\Warehouse\Inventory\StockController as WarehouseStockController;
 use App\Http\Controllers\Warehouse\Inventory\InventoryMovementController as WarehouseInventoryMovementController;
+use App\Http\Controllers\Warehouse\Inventory\GoodsReceiptController as WarehouseGoodsReceiptController;
+use App\Http\Controllers\Warehouse\Inventory\WasteController as WarehouseWasteController;
+use App\Http\Controllers\Warehouse\Inventory\StockOpnameController as WarehouseStockOpnameController;
 Route::get('/', function () {
     if (!Auth::check()) {
         return redirect()->route('login');
@@ -76,6 +79,18 @@ Route::middleware('auth')->group(function () {
 
         Route::get('stocks', [WarehouseStockController::class, 'index'])->name('stocks.index');
         Route::get('inventory-movements', [WarehouseInventoryMovementController::class, 'index'])->name('inventory-movements.index');
+
+        Route::get('goods-receipts', [WarehouseGoodsReceiptController::class, 'index'])->name('goods-receipts.index');
+        Route::get('goods-receipts/create', [WarehouseGoodsReceiptController::class, 'create'])->name('goods-receipts.create');
+        Route::post('goods-receipts', [WarehouseGoodsReceiptController::class, 'store'])->name('goods-receipts.store');
+
+        Route::get('wastes', [WarehouseWasteController::class, 'index'])->name('wastes.index');
+        Route::get('wastes/create', [WarehouseWasteController::class, 'create'])->name('wastes.create');
+        Route::post('wastes', [WarehouseWasteController::class, 'store'])->name('wastes.store');
+
+        Route::get('stock-opnames', [WarehouseStockOpnameController::class, 'index'])->name('stock-opnames.index');
+        Route::get('stock-opnames/create', [WarehouseStockOpnameController::class, 'create'])->name('stock-opnames.create');
+        Route::post('stock-opnames', [WarehouseStockOpnameController::class, 'store'])->name('stock-opnames.store');
     });
 
 });

@@ -81,6 +81,18 @@
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.inventory-movements.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span>📈</span><span>Inventory Movement</span>
                         </a>
+                        <a href="{{ route('warehouse.goods-receipts.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.goods-receipts.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>📥</span><span>Barang Masuk</span>
+                        </a>
+                        <a href="{{ route('warehouse.wastes.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.wastes.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>🗑️</span><span>Waste</span>
+                        </a>
+                        <a href="{{ route('warehouse.stock-opnames.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.stock-opnames.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>📋</span><span>Stock Opname</span>
+                        </a>
                     </nav>
                 </div>
 
@@ -157,6 +169,18 @@
                     <a href="{{ route('warehouse.inventory-movements.index') }}"
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.inventory-movements.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span>📈</span><span>Inventory Movement</span>
+                    </a>
+                    <a href="{{ route('warehouse.goods-receipts.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.goods-receipts.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>📥</span><span>Barang Masuk</span>
+                    </a>
+                    <a href="{{ route('warehouse.wastes.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.wastes.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>🗑️</span><span>Waste</span>
+                    </a>
+                    <a href="{{ route('warehouse.stock-opnames.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.stock-opnames.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>📋</span><span>Stock Opname</span>
                     </a>
 
                 </nav>
