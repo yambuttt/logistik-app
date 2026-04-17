@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use App\Services\ShipmentCapacityService;
 
 class ShipmentController extends Controller
 {
@@ -44,7 +45,7 @@ class ShipmentController extends Controller
         return view('warehouse.shipments.create', compact('orders', 'drivers'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, ShipmentCapacityService $shipmentCapacityService): RedirectResponse
     {
         $warehouseId = auth()->user()->warehouse_id;
 
@@ -59,7 +60,7 @@ class ShipmentController extends Controller
             'driver_user_id.required' => 'Driver wajib dipilih.',
         ]);
 
-        $order = Order::with('items')
+        $order = Order::with(['items.product'])
             ->where('warehouse_id', $warehouseId)
             ->findOrFail($validated['order_id']);
 
@@ -68,10 +69,23 @@ class ShipmentController extends Controller
             ->where('assignment_date', $validated['shipment_date'])
             ->first();
 
-        if (! $driverAssignment || ! $driverAssignment->vehicle) {
+        if (!$driverAssignment || !$driverAssignment->vehicle) {
             return back()
                 ->withErrors([
                     'driver_user_id' => 'Driver belum memiliki kendaraan aktif pada tanggal pengiriman tersebut.',
+                ])
+                ->withInput();
+        }
+
+        $capacityErrors = $shipmentCapacityService->validateOrderAgainstVehicle(
+            $order,
+            $driverAssignment->vehicle_id
+        );
+
+        if (!empty($capacityErrors)) {
+            return back()
+                ->withErrors([
+                    'order_id' => implode(' ', $capacityErrors),
                 ])
                 ->withInput();
         }
