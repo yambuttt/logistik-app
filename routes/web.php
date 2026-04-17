@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Warehouse\OrderController as WarehouseOrderController;
 use App\Http\Controllers\Warehouse\ShipmentController as WarehouseShipmentController;
+use App\Http\Controllers\Driver\ShipmentController as DriverShipmentController;
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -111,5 +112,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('vehicle-assignment', [VehicleAssignmentController::class, 'index'])->name('vehicle-assignment.index');
         Route::post('vehicle-assignment', [VehicleAssignmentController::class, 'store'])->name('vehicle-assignment.store');
+
+        Route::get('shipments', [DriverShipmentController::class, 'index'])->name('shipments.index');
+        Route::post('shipments/{shipment}/start', [DriverShipmentController::class, 'start'])->name('shipments.start');
+        Route::post('shipments/{shipment}/delivered', [DriverShipmentController::class, 'delivered'])->name('shipments.delivered');
+        Route::post('shipments/{shipment}/returned', [DriverShipmentController::class, 'returned'])->name('shipments.returned');
     });
 });

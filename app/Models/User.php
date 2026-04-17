@@ -21,6 +21,7 @@ class User extends Authenticatable
         'warehouse_id',
         'phone',
         'is_active',
+        'availability_status',
     ];
 
     protected $hidden = [
@@ -50,5 +51,11 @@ class User extends Authenticatable
     public function vehicleAssignments(): HasMany
     {
         return $this->hasMany(DriverVehicleAssignment::class, 'driver_user_id');
+    }
+    public function isAvailableDriver(): bool
+    {
+        return $this->role === 'driver'
+            && $this->is_active
+            && $this->availability_status === 'available';
     }
 }

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use App\Services\ShipmentCapacityService;
+use App\Services\AutoAssignShipmentService;
 
 class ShipmentController extends Controller
 {
@@ -37,68 +38,40 @@ class ShipmentController extends Controller
             ->latest()
             ->get();
 
-        $drivers = User::where('role', 'driver')
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->get();
-
-        return view('warehouse.shipments.create', compact('orders', 'drivers'));
+        return view('warehouse.shipments.create', compact('orders'));
     }
 
-    public function store(Request $request, ShipmentCapacityService $shipmentCapacityService): RedirectResponse
+    public function store(Request $request, AutoAssignShipmentService $autoAssignShipmentService): RedirectResponse
     {
         $warehouseId = auth()->user()->warehouse_id;
 
         $validated = $request->validate([
             'shipment_date' => ['required', 'date'],
             'order_id' => ['required', 'exists:orders,id'],
-            'driver_user_id' => ['required', 'exists:users,id'],
             'notes' => ['nullable', 'string'],
         ], [
             'shipment_date.required' => 'Tanggal pengiriman wajib diisi.',
             'order_id.required' => 'Pesanan wajib dipilih.',
-            'driver_user_id.required' => 'Driver wajib dipilih.',
         ]);
 
         $order = Order::with(['items.product'])
             ->where('warehouse_id', $warehouseId)
             ->findOrFail($validated['order_id']);
 
-        $driverAssignment = DriverVehicleAssignment::with('vehicle')
-            ->where('driver_user_id', $validated['driver_user_id'])
-            ->where('assignment_date', $validated['shipment_date'])
-            ->first();
-
-        if (!$driverAssignment || !$driverAssignment->vehicle) {
-            return back()
-                ->withErrors([
-                    'driver_user_id' => 'Driver belum memiliki kendaraan aktif pada tanggal pengiriman tersebut.',
-                ])
-                ->withInput();
-        }
-
-        $capacityErrors = $shipmentCapacityService->validateOrderAgainstVehicle(
+        $assignmentResult = $autoAssignShipmentService->assign(
             $order,
-            $driverAssignment->vehicle_id
+            $validated['shipment_date']
         );
 
-        if (!empty($capacityErrors)) {
-            return back()
-                ->withErrors([
-                    'order_id' => implode(' ', $capacityErrors),
-                ])
-                ->withInput();
-        }
-
-        DB::transaction(function () use ($validated, $warehouseId, $order, $driverAssignment) {
+        DB::transaction(function () use ($validated, $warehouseId, $order, $assignmentResult) {
             $shipment = Shipment::create([
                 'shipment_number' => 'SHP-' . now()->format('YmdHis'),
                 'shipment_date' => $validated['shipment_date'],
                 'warehouse_id' => $warehouseId,
                 'order_id' => $order->id,
-                'driver_user_id' => $validated['driver_user_id'],
-                'vehicle_id' => $driverAssignment->vehicle_id,
-                'status' => 'assigned',
+                'driver_user_id' => $assignmentResult['matched'] ? $assignmentResult['driver']->id : null,
+                'vehicle_id' => $assignmentResult['matched'] ? $assignmentResult['vehicle']->id : null,
+                'status' => $assignmentResult['matched'] ? 'assigned' : 'waiting_driver',
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => auth()->id(),
             ]);
@@ -111,12 +84,23 @@ class ShipmentController extends Controller
             }
 
             $order->update([
-                'status' => 'ready',
+                'status' => $assignmentResult['matched'] ? 'ready' : 'draft',
             ]);
+
+            if ($assignmentResult['matched']) {
+                $assignmentResult['driver']->update([
+                    'availability_status' => 'assigned',
+                ]);
+            }
         });
 
         return redirect()
             ->route('warehouse.shipments.index')
-            ->with('success', 'Pengiriman berhasil dibuat.');
+            ->with(
+                'success',
+                $assignmentResult['matched']
+                ? 'Pengiriman berhasil dibuat dan driver otomatis di-assign.'
+                : 'Pengiriman dibuat, tetapi masih menunggu driver.'
+            );
     }
 }

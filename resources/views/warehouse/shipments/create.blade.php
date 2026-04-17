@@ -10,7 +10,7 @@
             Buat Pengiriman
         </h2>
         <p class="mt-1 text-sm text-slate-500">
-            Buat pengiriman dari pesanan yang sudah tersedia.
+            Sistem akan otomatis mencarikan driver dan kendaraan yang sesuai.
         </p>
     </div>
 
@@ -50,24 +50,6 @@
                     @enderror
                 </div>
 
-                <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">Pilih Driver</label>
-                    <select
-                        name="driver_user_id"
-                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
-                    >
-                        <option value="">Pilih driver</option>
-                        @foreach ($drivers as $driver)
-                            <option value="{{ $driver->id }}" @selected(old('driver_user_id') == $driver->id)>
-                                {{ $driver->name }} - {{ $driver->email }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('driver_user_id')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 <div class="md:col-span-2">
                     <label class="mb-2 block text-sm font-semibold text-slate-700">Catatan</label>
                     <textarea
@@ -77,6 +59,12 @@
                         placeholder="Catatan tambahan"
                     >{{ old('notes') }}</textarea>
                 </div>
+            </div>
+
+            <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                Sistem akan mencoba:
+                driver aktif → status available → punya kendaraan hari itu → kapasitas kendaraan sesuai pesanan.
+                Jika tidak ada yang cocok, shipment dibuat dengan status <strong>waiting_driver</strong>.
             </div>
 
             <div class="flex flex-col gap-3 pt-4 sm:flex-row">
