@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use App\Services\ShipmentCapacityService;
 use App\Services\GoogleMapsService;
 use App\Services\AutoAssignShipmentService;
+use App\Services\DistanceService;
 
 class ShipmentController extends Controller
 {
@@ -45,7 +46,7 @@ class ShipmentController extends Controller
     public function store(
         Request $request,
         AutoAssignShipmentService $autoAssignShipmentService,
-        GoogleMapsService $googleMapsService
+        DistanceService $distanceService
     ): RedirectResponse {
         $warehouseId = auth()->user()->warehouse_id;
 
@@ -76,20 +77,21 @@ class ShipmentController extends Controller
         ) {
             $warehouse = auth()->user()->warehouse;
 
-            if ($warehouse && $warehouse->address) {
-                $warehouseGeocode = $googleMapsService->geocode($warehouse->address);
+            if ($warehouse && $warehouse->latitude && $warehouse->longitude) {
+                $distanceKm = $distanceService->haversine(
+                    (float) $warehouse->latitude,
+                    (float) $warehouse->longitude,
+                    (float) $order->delivery_latitude,
+                    (float) $order->delivery_longitude
+                );
 
-                if ($warehouseGeocode) {
-                    $distanceData = $googleMapsService->distanceMatrix(
-                        (float) $warehouseGeocode['latitude'],
-                        (float) $warehouseGeocode['longitude'],
-                        (float) $order->delivery_latitude,
-                        (float) $order->delivery_longitude
-                    );
-                }
+                $distanceData = [
+                    'distance_km' => $distanceKm,
+                    'duration_minutes' => $distanceService->estimateMinutes($distanceKm),
+                ];
             }
 
-            $googleMapsUrl = $googleMapsService->buildGoogleMapsUrl(
+            $googleMapsUrl = $distanceService->buildGoogleMapsUrl(
                 (float) $order->delivery_latitude,
                 (float) $order->delivery_longitude
             );

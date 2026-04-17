@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+@stack('styles')
 
 <head>
     <meta charset="UTF-8">
@@ -101,6 +102,10 @@
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.shipments.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span>🚚</span><span>Pengiriman</span>
                         </a>
+                        <a href="{{ route('warehouse.settings.location.edit') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.settings.location.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>📍</span><span>Lokasi Gudang</span>
+                        </a>
                     </nav>
                 </div>
 
@@ -198,11 +203,16 @@
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.shipments.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span>🚚</span><span>Pengiriman</span>
                     </a>
+                    <a href="{{ route('warehouse.settings.location.edit') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.settings.location.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>📍</span><span>Lokasi Gudang</span>
+                    </a>
 
                 </nav>
             </div>
         </aside>
     </div>
+    @stack('scripts')
 </body>
 
 </html>

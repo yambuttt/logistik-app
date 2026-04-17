@@ -11,9 +11,10 @@ class Warehouse extends Model
         'name',
         'code',
         'address',
+        'latitude',
+        'longitude',
         'is_active',
     ];
-
     public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class);

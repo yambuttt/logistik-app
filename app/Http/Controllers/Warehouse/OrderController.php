@@ -34,7 +34,7 @@ class OrderController extends Controller
         return view('warehouse.orders.create', compact('products'));
     }
 
-    public function store(Request $request, GoogleMapsService $googleMapsService): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $warehouseId = auth()->user()->warehouse_id;
 
@@ -47,6 +47,8 @@ class OrderController extends Controller
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.qty' => ['required', 'numeric', 'min:0.01'],
+            'delivery_latitude' => ['required', 'numeric'],
+            'delivery_longitude' => ['required', 'numeric'],
         ], [
             'order_date.required' => 'Tanggal pesanan wajib diisi.',
             'customer_name.required' => 'Nama customer wajib diisi.',
@@ -57,8 +59,7 @@ class OrderController extends Controller
             'items.*.qty.required' => 'Qty wajib diisi.',
         ]);
 
-        DB::transaction(function () use ($validated, $warehouseId, $googleMapsService) {
-            $geocode = $googleMapsService->geocode($validated['delivery_address']);
+        DB::transaction(function () use ($validated, $warehouseId) {
             $order = Order::create([
                 'order_number' => 'ORD-' . now()->format('YmdHis'),
                 'order_date' => $validated['order_date'],
@@ -69,8 +70,8 @@ class OrderController extends Controller
                 'status' => 'draft',
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => auth()->id(),
-                'delivery_latitude' => $geocode['latitude'] ?? null,
-                'delivery_longitude' => $geocode['longitude'] ?? null,
+                'delivery_latitude' => $validated['delivery_latitude'],
+                'delivery_longitude' => $validated['delivery_longitude'],
             ]);
 
             foreach ($validated['items'] as $item) {
