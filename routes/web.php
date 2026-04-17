@@ -21,9 +21,10 @@ use App\Http\Controllers\Warehouse\Inventory\StockOpnameController as WarehouseS
 use App\Http\Controllers\Warehouse\Inventory\WasteController as WarehouseWasteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Warehouse\OrderController as WarehouseOrderController;
 
 Route::get('/', function () {
-    if (! Auth::check()) {
+    if (!Auth::check()) {
         return redirect()->route('login');
     }
 
@@ -94,6 +95,10 @@ Route::middleware('auth')->group(function () {
         Route::get('stock-opnames', [WarehouseStockOpnameController::class, 'index'])->name('stock-opnames.index');
         Route::get('stock-opnames/create', [WarehouseStockOpnameController::class, 'create'])->name('stock-opnames.create');
         Route::post('stock-opnames', [WarehouseStockOpnameController::class, 'store'])->name('stock-opnames.store');
+
+        Route::get('orders', [WarehouseOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/create', [WarehouseOrderController::class, 'create'])->name('orders.create');
+        Route::post('orders', [WarehouseOrderController::class, 'store'])->name('orders.store');
     });
 
     Route::prefix('driver')->name('driver.')->middleware('role:driver')->group(function () {

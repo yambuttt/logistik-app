@@ -93,6 +93,10 @@
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.stock-opnames.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span>📋</span><span>Stock Opname</span>
                         </a>
+                        <a href="{{ route('warehouse.orders.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.orders.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>🧾</span><span>Pesanan</span>
+                        </a>
                     </nav>
                 </div>
 
@@ -181,6 +185,10 @@
                     <a href="{{ route('warehouse.stock-opnames.index') }}"
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.stock-opnames.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span>📋</span><span>Stock Opname</span>
+                    </a>
+                    <a href="{{ route('warehouse.orders.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.orders.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>🧾</span><span>Pesanan</span>
                     </a>
 
                 </nav>
