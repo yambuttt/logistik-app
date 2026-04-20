@@ -58,4 +58,8 @@ class User extends Authenticatable
             && $this->is_active
             && $this->availability_status === 'available';
     }
+    public function deliveryTrips(): HasMany
+    {
+        return $this->hasMany(DeliveryTrip::class, 'driver_user_id');
+    }
 }

@@ -25,6 +25,7 @@ use App\Http\Controllers\Warehouse\OrderController as WarehouseOrderController;
 use App\Http\Controllers\Warehouse\ShipmentController as WarehouseShipmentController;
 use App\Http\Controllers\Driver\ShipmentController as DriverShipmentController;
 use App\Http\Controllers\Warehouse\SettingController as WarehouseSettingController;
+use App\Http\Controllers\Warehouse\DeliveryTripController as WarehouseDeliveryTripController;
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -109,6 +110,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('settings/location', [WarehouseSettingController::class, 'edit'])->name('settings.location.edit');
         Route::put('settings/location', [WarehouseSettingController::class, 'update'])->name('settings.location.update');
+        Route::get('delivery-trips', [WarehouseDeliveryTripController::class, 'index'])->name('delivery-trips.index');
+        Route::get('delivery-trips/create', [WarehouseDeliveryTripController::class, 'create'])->name('delivery-trips.create');
+        Route::post('delivery-trips', [WarehouseDeliveryTripController::class, 'store'])->name('delivery-trips.store');
     });
 
     Route::prefix('driver')->name('driver.')->middleware('role:driver')->group(function () {

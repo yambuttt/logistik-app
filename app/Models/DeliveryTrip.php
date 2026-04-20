@@ -6,31 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Shipment extends Model
+class DeliveryTrip extends Model
 {
     protected $fillable = [
-        'shipment_number',
-        'shipment_date',
+        'trip_number',
+        'trip_date',
         'warehouse_id',
-        'order_id',
         'driver_user_id',
         'vehicle_id',
         'status',
+        'total_shipments',
+        'total_estimated_distance_km',
         'notes',
         'created_by',
-        'estimated_distance_km',
-        'estimated_duration_minutes',
-        'google_maps_url',
     ];
 
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
-    }
-
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(Order::class);
     }
 
     public function driver(): BelongsTo
@@ -43,23 +36,20 @@ class Shipment extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function items(): HasMany
+    public function tripShipments(): HasMany
     {
-        return $this->hasMany(ShipmentItem::class);
+        return $this->hasMany(DeliveryTripShipment::class);
     }
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-    public function tripShipments(): HasMany
+    public function shipments()
     {
-        return $this->hasMany(DeliveryTripShipment::class);
-    }
-    public function deliveryTrips()
-    {
-        return $this->belongsToMany(DeliveryTrip::class, 'delivery_trip_shipments')
+        return $this->belongsToMany(Shipment::class, 'delivery_trip_shipments')
             ->withPivot(['route_order', 'distance_from_previous_km'])
-            ->withTimestamps();
+            ->withTimestamps()
+            ->orderBy('delivery_trip_shipments.route_order');
     }
 }
