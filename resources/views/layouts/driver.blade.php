@@ -81,6 +81,10 @@
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('driver.shipments.*') ? 'bg-white text-amber-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span>📦</span><span>Tugas Pengiriman</span>
                         </a>
+                        <a href="{{ route('driver.delivery-trips.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('driver.delivery-trips.*') ? 'bg-white text-amber-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>🛣️</span><span>Trip Pengiriman</span>
+                        </a>
 
                     </nav>
                 </div>
@@ -157,6 +161,10 @@
                     <a href="{{ route('driver.shipments.index') }}"
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('driver.shipments.*') ? 'bg-white text-amber-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span>📦</span><span>Tugas Pengiriman</span>
+                    </a>
+                    <a href="{{ route('driver.delivery-trips.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('driver.delivery-trips.*') ? 'bg-white text-amber-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>🛣️</span><span>Trip Pengiriman</span>
                     </a>
                 </nav>
             </div>

@@ -26,6 +26,7 @@ use App\Http\Controllers\Warehouse\ShipmentController as WarehouseShipmentContro
 use App\Http\Controllers\Driver\ShipmentController as DriverShipmentController;
 use App\Http\Controllers\Warehouse\SettingController as WarehouseSettingController;
 use App\Http\Controllers\Warehouse\DeliveryTripController as WarehouseDeliveryTripController;
+use App\Http\Controllers\Driver\DeliveryTripController as DriverDeliveryTripController;
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -125,5 +126,9 @@ Route::middleware('auth')->group(function () {
         Route::post('shipments/{shipment}/start', [DriverShipmentController::class, 'start'])->name('shipments.start');
         Route::post('shipments/{shipment}/delivered', [DriverShipmentController::class, 'delivered'])->name('shipments.delivered');
         Route::post('shipments/{shipment}/returned', [DriverShipmentController::class, 'returned'])->name('shipments.returned');
+        Route::get('delivery-trips', [DriverDeliveryTripController::class, 'index'])->name('delivery-trips.index');
+        Route::post('delivery-trips/{deliveryTrip}/start', [DriverDeliveryTripController::class, 'start'])->name('delivery-trips.start');
+        Route::post('delivery-trips/{deliveryTrip}/trip-shipments/{tripShipmentId}/complete-stop', [DriverDeliveryTripController::class, 'completeStop'])->name('delivery-trips.complete-stop');
+        Route::post('delivery-trips/{deliveryTrip}/finish', [DriverDeliveryTripController::class, 'finish'])->name('delivery-trips.finish');
     });
 });
